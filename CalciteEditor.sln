@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34018.315
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalciteEditor", "CalciteEditor\CalciteEditor.csproj", "{057F2951-DD58-4A85-9306-8995B6EBCBF5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{057F2951-DD58-4A85-9306-8995B6EBCBF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{057F2951-DD58-4A85-9306-8995B6EBCBF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{057F2951-DD58-4A85-9306-8995B6EBCBF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{057F2951-DD58-4A85-9306-8995B6EBCBF5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {24A0DFAF-AC50-4244-B466-C96C50771F44}
+	EndGlobalSection
+EndGlobal
