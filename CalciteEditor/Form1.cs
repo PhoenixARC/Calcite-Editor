@@ -27,6 +27,22 @@ namespace CalciteEditor
             _fuiReader = new FourjUIReader();
             _fuiWriter = new FourjUIWriter(_fui);
         }
+        public Form1(string Filepath)
+        {
+            InitializeComponent();
+            _fuiReader = new FourjUIReader();
+
+            _fui = _fuiReader.FromFile(Filepath);
+            _fuiFilePath = Filepath;
+            //ActiveForm.Text = "[BETA]Calcite FUI Editor: " + _fui.Header.SwfFileName;
+            treeView1.Nodes.Clear();
+            MapImages();
+
+            saveToolStripMenuItem.Enabled = true;
+            saveAsToolStripMenuItem.Enabled = true;
+            closeToolStripMenuItem.Enabled = true;
+            treeView1.ExpandAll();
+        }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -43,6 +59,7 @@ namespace CalciteEditor
                 saveToolStripMenuItem.Enabled = true;
                 saveAsToolStripMenuItem.Enabled = true;
                 closeToolStripMenuItem.Enabled = true;
+                treeView1.ExpandAll();
 
             }
         }
@@ -109,7 +126,23 @@ namespace CalciteEditor
             foreach (FuiBitmap bitmap in _fui.Bitmaps)
             {
                 TreeNode tnBitmap = new TreeNode();
-                tnBitmap.Text = "Image["+i+"]";
+
+                string Symbol = "";
+
+                foreach (FuiSymbol sym in _fui.Symbols)
+                {
+                    if (sym.Index == i)
+                        Symbol = sym.Name;
+                }
+                if (string.IsNullOrEmpty(Symbol))
+                {
+                    tnBitmap.Text = "Image[" + i + "]";
+                }
+                else 
+                {
+                    tnBitmap.Text = Symbol; 
+                }
+                tnBitmap.Tag = i;
                 tnImages.Nodes.Add(tnBitmap);
                 i++;
             }
@@ -131,10 +164,14 @@ namespace CalciteEditor
         {
             richTextBox1.Text = "";
             pictureBoxWithInterpolationMode1.Image = null;
-
-            if (treeView1.SelectedNode.Text.StartsWith("Image[")) 
+            if (treeView1.SelectedNode.Parent == null)
+                return;
+            if (treeView1.SelectedNode.Parent.Text.StartsWith("Images")) 
             {
-                int index = int.Parse(treeView1.SelectedNode.Text.Replace("Image[","").Replace("]",""));
+                //int index = int.Parse(treeView1.SelectedNode.Text.Replace("Image[","").Replace("]",""));
+
+
+                int index = (int)treeView1.SelectedNode.Tag;
                 byte[] ImageData = _fui.ImagesData[index];
                 FuiBitmap bitmap = _fui.Bitmaps[index];
                 using (var ms = new MemoryStream(ImageData))

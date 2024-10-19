@@ -63,6 +63,16 @@ namespace CalciteEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap BackTile {
+            get {
+                object obj = ResourceManager.GetObject("BackTile", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Calcite {
             get {
                 object obj = ResourceManager.GetObject("Calcite", resourceCulture);

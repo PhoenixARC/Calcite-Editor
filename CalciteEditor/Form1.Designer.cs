@@ -46,8 +46,8 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.replaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pictureBoxWithInterpolationMode1 = new ARC_Studio.PictureBoxWithInterpolationMode();
             this.copyActionObjectNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pictureBoxWithInterpolationMode1 = new ARC_Studio.PictureBoxWithInterpolationMode();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -81,7 +81,7 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -89,7 +89,7 @@
             // 
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -97,7 +97,7 @@
             // 
             this.saveAsToolStripMenuItem.Enabled = false;
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.saveAsToolStripMenuItem.Text = "Save As...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
@@ -105,7 +105,7 @@
             // 
             this.closeToolStripMenuItem.Enabled = false;
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -203,8 +203,17 @@
             this.extractToolStripMenuItem.Visible = false;
             this.extractToolStripMenuItem.Click += new System.EventHandler(this.extractToolStripMenuItem_Click);
             // 
+            // copyActionObjectNameToolStripMenuItem
+            // 
+            this.copyActionObjectNameToolStripMenuItem.Name = "copyActionObjectNameToolStripMenuItem";
+            this.copyActionObjectNameToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.copyActionObjectNameToolStripMenuItem.Text = "Copy Action Object Name";
+            this.copyActionObjectNameToolStripMenuItem.Visible = false;
+            this.copyActionObjectNameToolStripMenuItem.Click += new System.EventHandler(this.copyActionObjectNameToolStripMenuItem_Click);
+            // 
             // pictureBoxWithInterpolationMode1
             // 
+            this.pictureBoxWithInterpolationMode1.BackgroundImage = global::CalciteEditor.Properties.Resources.BackTile;
             this.pictureBoxWithInterpolationMode1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxWithInterpolationMode1.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             this.pictureBoxWithInterpolationMode1.Location = new System.Drawing.Point(3, 3);
@@ -213,14 +222,6 @@
             this.pictureBoxWithInterpolationMode1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxWithInterpolationMode1.TabIndex = 1;
             this.pictureBoxWithInterpolationMode1.TabStop = false;
-            // 
-            // copyActionObjectNameToolStripMenuItem
-            // 
-            this.copyActionObjectNameToolStripMenuItem.Name = "copyActionObjectNameToolStripMenuItem";
-            this.copyActionObjectNameToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
-            this.copyActionObjectNameToolStripMenuItem.Text = "Copy Action Object Name";
-            this.copyActionObjectNameToolStripMenuItem.Visible = false;
-            this.copyActionObjectNameToolStripMenuItem.Click += new System.EventHandler(this.copyActionObjectNameToolStripMenuItem_Click);
             // 
             // Form1
             // 
