@@ -39,6 +39,11 @@ namespace CalciteEditor
                 ActiveForm.Text = "[BETA]Calcite FUI Editor: " + _fui.Header.SwfFileName;
                 treeView1.Nodes.Clear();
                 MapImages();
+
+                saveToolStripMenuItem.Enabled = true;
+                saveAsToolStripMenuItem.Enabled = true;
+                closeToolStripMenuItem.Enabled = true;
+
             }
         }
 
@@ -69,8 +74,8 @@ namespace CalciteEditor
             {
                 _fuiWriter = new FourjUIWriter(_fui);
                 _fuiWriter.WriteToFile(sfd.FileName);
+                MessageBox.Show("Saved!");
             }
-            MessageBox.Show("Saved!");
         }
 
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -79,6 +84,13 @@ namespace CalciteEditor
             System.GC.Collect();
             ActiveForm.Text = "[BETA]Calcite FUI Editor";
             treeView1.Nodes.Clear();
+            richTextBox1.Text = "";
+            pictureBoxWithInterpolationMode1.Image = null;
+
+
+            saveToolStripMenuItem.Enabled = false;
+            saveAsToolStripMenuItem.Enabled = false;
+            closeToolStripMenuItem.Enabled = false;
         }
 
         public void MapImages() 
@@ -87,7 +99,11 @@ namespace CalciteEditor
             tn.Text = _fui.Header.SwfFileName;
 
             TreeNode tnImages = new TreeNode();
-            tnImages.Text = "images";
+            tnImages.Text = "Images";
+            
+            TreeNode tnActions = new TreeNode();
+            tnActions.Text = "Timeline Actions";
+            
 
             int i = 0;
             foreach (FuiBitmap bitmap in _fui.Bitmaps)
@@ -97,6 +113,15 @@ namespace CalciteEditor
                 tnImages.Nodes.Add(tnBitmap);
                 i++;
             }
+            foreach (FuiTimelineAction action in _fui.TimelineActions)
+            {
+                TreeNode tnBitmap = new TreeNode();
+                tnBitmap.Text = action.StringArg0 + ":" + action.StringArg1;
+                if(!string.IsNullOrEmpty(action.StringArg0) && !string.IsNullOrEmpty(action.StringArg1))
+                    tnActions.Nodes.Add(tnBitmap);
+            }
+
+            tn.Nodes.Add(tnActions);
             tn.Nodes.Add(tnImages);
 
             treeView1.Nodes.Add(tn);
@@ -183,11 +208,21 @@ namespace CalciteEditor
                 }
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    _fui.ImagesData[index] = File.ReadAllBytes(ofd.FileName);
+
+                    if (ofd.Filter.Contains("PNG Images|*.png"))
+                    {
+                        Bitmap PNGImage = new Bitmap(ofd.FileName);
+                        SwapColor(PNGImage);
+                        ImageConverter converter = new ImageConverter();
+                        byte[] PNGData = (byte[])converter.ConvertTo(PNGImage, typeof(byte[]));
+                        _fui.ImagesData[index] = PNGData;
+                    }
+                    else
+                        _fui.ImagesData[index] = File.ReadAllBytes(ofd.FileName);
+                    MessageBox.Show("Replaced!");
                 }
 
             }
-            MessageBox.Show("Replaced!");
         }
 
         private void extractToolStripMenuItem_Click(object sender, EventArgs e)
@@ -218,17 +253,69 @@ namespace CalciteEditor
                 }
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    File.WriteAllBytes(ofd.FileName, _fui.ImagesData[index]);
+                    if (ofd.Filter.Contains("PNG Images|*.png"))
+                    {
+                        byte[] ImageData = _fui.ImagesData[index];
+                        using (var ms = new MemoryStream(ImageData))
+                        {
+                            Image img = Image.FromStream(ms);
+                            Bitmap bmp = new Bitmap(img);
+                            SwapColor(bmp);
+                            bmp.Save(ofd.FileName);
+                            img.Dispose();
+                            bmp.Dispose();
+                            ms.Close();
+                            ms.Dispose();
+                        }
+                    }
+                    else
+                        File.WriteAllBytes(ofd.FileName, _fui.ImagesData[index]);
+                    MessageBox.Show("Extracted!");
                 }
 
             }
-            MessageBox.Show("Extracted!");
         }
 
         private void creditsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             About abtform = new About();
             abtform.ShowDialog();
+        }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+            if (treeView1.SelectedNode.Index == 0)
+            {
+                replaceToolStripMenuItem.Visible = false;
+                extractToolStripMenuItem.Visible = false;
+                copyActionObjectNameToolStripMenuItem.Visible = false;
+                return;
+            }
+            if (treeView1.SelectedNode.Parent.Text.StartsWith("Images")) 
+            {
+                replaceToolStripMenuItem.Visible = true;
+                extractToolStripMenuItem.Visible = true;
+                copyActionObjectNameToolStripMenuItem.Visible = false;
+                return;
+            }
+            if (treeView1.SelectedNode.Parent.Text.StartsWith("Timeline Actions"))
+            {
+                replaceToolStripMenuItem.Visible = false;
+                extractToolStripMenuItem.Visible = false;
+                copyActionObjectNameToolStripMenuItem.Visible = true;
+                return;
+            }
+            replaceToolStripMenuItem.Visible = false;
+            extractToolStripMenuItem.Visible = false;
+            copyActionObjectNameToolStripMenuItem.Visible = false;
+        }
+
+        private void copyActionObjectNameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string actionName = treeView1.SelectedNode.Text.Split(':')[0];
+            Clipboard.SetText(actionName);
+            MessageBox.Show("Copied \"" + actionName + "\" to the clipboard!");
+
         }
     }
 }
