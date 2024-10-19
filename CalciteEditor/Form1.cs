@@ -127,21 +127,13 @@ namespace CalciteEditor
             {
                 TreeNode tnBitmap = new TreeNode();
 
-                string Symbol = "";
-
-                foreach (FuiSymbol sym in _fui.Symbols)
-                {
-                    if (sym.Index == i)
-                        Symbol = sym.Name;
-                }
-                if (string.IsNullOrEmpty(Symbol))
-                {
+                if (bitmap.SymbolIndex == -1)
                     tnBitmap.Text = "Image[" + i + "]";
-                }
                 else 
                 {
-                    tnBitmap.Text = Symbol; 
+                    tnBitmap.Text = _fui.Symbols[bitmap.SymbolIndex].Name;
                 }
+
                 tnBitmap.Tag = i;
                 tnImages.Nodes.Add(tnBitmap);
                 i++;
@@ -168,9 +160,6 @@ namespace CalciteEditor
                 return;
             if (treeView1.SelectedNode.Parent.Text.StartsWith("Images")) 
             {
-                //int index = int.Parse(treeView1.SelectedNode.Text.Replace("Image[","").Replace("]",""));
-
-
                 int index = (int)treeView1.SelectedNode.Tag;
                 byte[] ImageData = _fui.ImagesData[index];
                 FuiBitmap bitmap = _fui.Bitmaps[index];
@@ -219,9 +208,11 @@ namespace CalciteEditor
 
         private void replaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (treeView1.SelectedNode.Text.StartsWith("Image["))
+            if (treeView1.SelectedNode.Parent == null)
+                return;
+            if (treeView1.SelectedNode.Parent.Text.StartsWith("Images"))
             {
-                int index = int.Parse(treeView1.SelectedNode.Text.Replace("Image[", "").Replace("]", ""));
+                int index = (int)treeView1.SelectedNode.Tag;
 
                 OpenFileDialog ofd = new OpenFileDialog();
                 FuiBitmap bitmap = _fui.Bitmaps[index];
@@ -264,9 +255,11 @@ namespace CalciteEditor
 
         private void extractToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (treeView1.SelectedNode.Text.StartsWith("Image["))
+            if (treeView1.SelectedNode.Parent == null)
+                return;
+            if (treeView1.SelectedNode.Parent.Text.StartsWith("Images"))
             {
-                int index = int.Parse(treeView1.SelectedNode.Text.Replace("Image[", "").Replace("]", ""));
+                int index = (int)treeView1.SelectedNode.Tag;
 
                 SaveFileDialog ofd = new SaveFileDialog();
                 FuiBitmap bitmap = _fui.Bitmaps[index];
@@ -288,6 +281,7 @@ namespace CalciteEditor
                         ofd.Filter = "JPEG Images|*.jpg";
                         break;
                 }
+                ofd.FileName = treeView1.SelectedNode.Text;
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     if (ofd.Filter.Contains("PNG Images|*.png"))
@@ -321,14 +315,14 @@ namespace CalciteEditor
 
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
         {
-            if (treeView1.SelectedNode.Index == 0)
+            if (treeView1.SelectedNode.Parent == null)
             {
                 replaceToolStripMenuItem.Visible = false;
                 extractToolStripMenuItem.Visible = false;
                 copyActionObjectNameToolStripMenuItem.Visible = false;
                 return;
             }
-            if (treeView1.SelectedNode.Parent.Text.StartsWith("Images")) 
+            if (treeView1.SelectedNode.Parent.Text.StartsWith("Images"))
             {
                 replaceToolStripMenuItem.Visible = true;
                 extractToolStripMenuItem.Visible = true;
