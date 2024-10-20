@@ -41,6 +41,7 @@ namespace CalciteEditor
             saveToolStripMenuItem.Enabled = true;
             saveAsToolStripMenuItem.Enabled = true;
             closeToolStripMenuItem.Enabled = true;
+            exportToJSONToolStripMenuItem.Enabled = true;
             treeView1.ExpandAll();
         }
 
@@ -59,6 +60,7 @@ namespace CalciteEditor
                 saveToolStripMenuItem.Enabled = true;
                 saveAsToolStripMenuItem.Enabled = true;
                 closeToolStripMenuItem.Enabled = true;
+                exportToJSONToolStripMenuItem.Enabled = true;
                 treeView1.ExpandAll();
 
             }
@@ -108,6 +110,7 @@ namespace CalciteEditor
             saveToolStripMenuItem.Enabled = false;
             saveAsToolStripMenuItem.Enabled = false;
             closeToolStripMenuItem.Enabled = false;
+            exportToJSONToolStripMenuItem.Enabled = false;
         }
 
         public void MapImages() 
@@ -120,6 +123,9 @@ namespace CalciteEditor
             
             TreeNode tnActions = new TreeNode();
             tnActions.Text = "Timeline Actions";
+            
+            TreeNode tnEvents = new TreeNode();
+            tnEvents.Text = "Timeline Events";
             
 
             int i = 0;
@@ -138,15 +144,31 @@ namespace CalciteEditor
                 tnImages.Nodes.Add(tnBitmap);
                 i++;
             }
+            i = 0;
             foreach (FuiTimelineAction action in _fui.TimelineActions)
             {
                 TreeNode tnBitmap = new TreeNode();
                 tnBitmap.Text = action.StringArg0 + ":" + action.StringArg1;
-                if(!string.IsNullOrEmpty(action.StringArg0) && !string.IsNullOrEmpty(action.StringArg1))
+                tnBitmap.Tag = i;
+                if (!string.IsNullOrEmpty(action.StringArg0) && !string.IsNullOrEmpty(action.StringArg1))
                     tnActions.Nodes.Add(tnBitmap);
+                i++;
+            }
+            i = 0;
+            foreach (FuiTimelineEvent _event in _fui.TimelineEvents)
+            {
+                TreeNode tnBitmap = new TreeNode();
+                if (_fui.References.Count > (int)_event.Index)
+                    tnBitmap.Text = _fui.References[(int)_event.Index].Name;
+                else
+                    tnBitmap.Text = "Event["+i+"]";
+                tnBitmap.Tag = i;
+                tnEvents.Nodes.Add(tnBitmap);
+                i++;
             }
 
             tn.Nodes.Add(tnActions);
+            tn.Nodes.Add(tnEvents);
             tn.Nodes.Add(tnImages);
 
             treeView1.Nodes.Add(tn);
@@ -347,6 +369,44 @@ namespace CalciteEditor
             Clipboard.SetText(actionName);
             MessageBox.Show("Copied \"" + actionName + "\" to the clipboard!");
 
+        }
+
+        private void exportToJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "JSON File|*.json";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllText(sfd.FileName, Newtonsoft.Json.JsonConvert.SerializeObject(_fui, Newtonsoft.Json.Formatting.Indented));
+            }
+        }
+
+        private void treeView1_DoubleClick(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode.Parent == null)
+            {
+                return;
+            }
+            if (treeView1.SelectedNode.Parent.Text.StartsWith("Timeline Actions"))
+            {
+                int index = (int)treeView1.SelectedNode.Tag;
+                Forms.Editors.TimelineActionEditor ActionEditor = new Forms.Editors.TimelineActionEditor(_fui.TimelineActions[index]);
+                if (ActionEditor.ShowDialog() == DialogResult.OK) 
+                {
+                    _fui.TimelineActions[index] = ActionEditor._action;
+                }
+                return;
+            }
+            if (treeView1.SelectedNode.Parent.Text.StartsWith("Timeline Events"))
+            {
+                int index = (int)treeView1.SelectedNode.Tag;
+                Forms.Editors.TimelineEventEditor ActionEditor = new Forms.Editors.TimelineEventEditor(_fui, index);
+                if (ActionEditor.ShowDialog() == DialogResult.OK) 
+                {
+                    _fui.TimelineEvents[index] = ActionEditor._event;
+                }
+                return;
+            }
         }
     }
 }

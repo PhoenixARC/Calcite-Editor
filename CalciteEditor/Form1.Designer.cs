@@ -36,24 +36,25 @@
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportToJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.creditsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.pictureBoxWithInterpolationMode1 = new ARC_Studio.PictureBoxWithInterpolationMode();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.replaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyActionObjectNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pictureBoxWithInterpolationMode1 = new ARC_Studio.PictureBoxWithInterpolationMode();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithInterpolationMode1)).BeginInit();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -73,7 +74,8 @@
             this.openToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
-            this.closeToolStripMenuItem});
+            this.closeToolStripMenuItem,
+            this.exportToJSONToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -81,7 +83,7 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -89,7 +91,7 @@
             // 
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -97,7 +99,7 @@
             // 
             this.saveAsToolStripMenuItem.Enabled = false;
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveAsToolStripMenuItem.Text = "Save As...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
@@ -105,9 +107,17 @@
             // 
             this.closeToolStripMenuItem.Enabled = false;
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
+            // 
+            // exportToJSONToolStripMenuItem
+            // 
+            this.exportToJSONToolStripMenuItem.Enabled = false;
+            this.exportToJSONToolStripMenuItem.Name = "exportToJSONToolStripMenuItem";
+            this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportToJSONToolStripMenuItem.Text = "Export to JSON";
+            this.exportToJSONToolStripMenuItem.Click += new System.EventHandler(this.exportToJSONToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -168,6 +178,18 @@
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
+            // pictureBoxWithInterpolationMode1
+            // 
+            this.pictureBoxWithInterpolationMode1.BackgroundImage = global::CalciteEditor.Properties.Resources.BackTile;
+            this.pictureBoxWithInterpolationMode1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBoxWithInterpolationMode1.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            this.pictureBoxWithInterpolationMode1.Location = new System.Drawing.Point(3, 3);
+            this.pictureBoxWithInterpolationMode1.Name = "pictureBoxWithInterpolationMode1";
+            this.pictureBoxWithInterpolationMode1.Size = new System.Drawing.Size(398, 316);
+            this.pictureBoxWithInterpolationMode1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxWithInterpolationMode1.TabIndex = 1;
+            this.pictureBoxWithInterpolationMode1.TabStop = false;
+            // 
             // treeView1
             // 
             this.treeView1.ContextMenuStrip = this.contextMenuStrip1;
@@ -176,6 +198,7 @@
             this.treeView1.Size = new System.Drawing.Size(213, 474);
             this.treeView1.TabIndex = 3;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            this.treeView1.DoubleClick += new System.EventHandler(this.treeView1_DoubleClick);
             // 
             // contextMenuStrip1
             // 
@@ -211,18 +234,6 @@
             this.copyActionObjectNameToolStripMenuItem.Visible = false;
             this.copyActionObjectNameToolStripMenuItem.Click += new System.EventHandler(this.copyActionObjectNameToolStripMenuItem_Click);
             // 
-            // pictureBoxWithInterpolationMode1
-            // 
-            this.pictureBoxWithInterpolationMode1.BackgroundImage = global::CalciteEditor.Properties.Resources.BackTile;
-            this.pictureBoxWithInterpolationMode1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBoxWithInterpolationMode1.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            this.pictureBoxWithInterpolationMode1.Location = new System.Drawing.Point(3, 3);
-            this.pictureBoxWithInterpolationMode1.Name = "pictureBoxWithInterpolationMode1";
-            this.pictureBoxWithInterpolationMode1.Size = new System.Drawing.Size(398, 316);
-            this.pictureBoxWithInterpolationMode1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBoxWithInterpolationMode1.TabIndex = 1;
-            this.pictureBoxWithInterpolationMode1.TabStop = false;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -243,8 +254,8 @@
             this.panel1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
-            this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithInterpolationMode1)).EndInit();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -270,6 +281,7 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem creditsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyActionObjectNameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportToJSONToolStripMenuItem;
     }
 }
 
