@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,6 +43,7 @@ namespace CalciteEditor
             saveAsToolStripMenuItem.Enabled = true;
             closeToolStripMenuItem.Enabled = true;
             exportToJSONToolStripMenuItem.Enabled = true;
+            exportAllImagesToolStripMenuItem.Enabled = true;
             treeView1.ExpandAll();
         }
 
@@ -61,6 +63,7 @@ namespace CalciteEditor
                 saveAsToolStripMenuItem.Enabled = true;
                 closeToolStripMenuItem.Enabled = true;
                 exportToJSONToolStripMenuItem.Enabled = true;
+                exportAllImagesToolStripMenuItem.Enabled = true;
                 treeView1.ExpandAll();
 
             }
@@ -111,6 +114,7 @@ namespace CalciteEditor
             saveAsToolStripMenuItem.Enabled = false;
             closeToolStripMenuItem.Enabled = false;
             exportToJSONToolStripMenuItem.Enabled = false;
+            exportAllImagesToolStripMenuItem.Enabled = false;
         }
 
         public void MapImages() 
@@ -407,6 +411,74 @@ namespace CalciteEditor
                 }
                 return;
             }
+        }
+
+        private void exportAllImagesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            if (fbd.ShowDialog() == DialogResult.OK) {
+                int i = 0;
+                foreach (FuiBitmap bitmap in _fui.Bitmaps)
+                {
+                    string ImageName = "";
+
+
+                    if (bitmap.SymbolIndex == -1)
+                        ImageName = "Image[" + bitmap.SymbolIndex + "]";
+                    else
+                    {
+                        ImageName = _fui.Symbols[bitmap.SymbolIndex].Name;
+                    }
+
+                    switch (bitmap.ImageFormat)
+                    {
+                        case FuiBitmap.FuiImageFormat.PNG_WITH_ALPHA_DATA:
+                            { 
+                                byte[] ImageData = _fui.ImagesData[i];
+                                using (var ms = new MemoryStream(ImageData))
+                                {
+                                    Image img = Image.FromStream(ms);
+                                    Bitmap bmp = new Bitmap(img);
+                                    SwapColor(bmp);
+                                    bmp.Save(fbd.SelectedPath + "\\" + ImageName + ".png");
+                                    img.Dispose();
+                                    bmp.Dispose();
+                                    ms.Close();
+                                    ms.Dispose();
+                                }
+                            }
+
+                            break;
+                        case FuiBitmap.FuiImageFormat.PNG_NO_ALPHA_DATA:
+                            {
+                                byte[] ImageData = _fui.ImagesData[i];
+                                using (var ms = new MemoryStream(ImageData))
+                                {
+                                    Image img = Image.FromStream(ms);
+                                    Bitmap bmp = new Bitmap(img);
+                                    SwapColor(bmp);
+                                    bmp.Save(fbd.SelectedPath + "\\" + ImageName + ".png");
+                                    img.Dispose();
+                                    bmp.Dispose();
+                                    ms.Close();
+                                    ms.Dispose();
+                                }
+                            }
+                            break;
+                        case FuiBitmap.FuiImageFormat.JPEG_NO_ALPHA_DATA:
+                            File.WriteAllBytes(fbd.SelectedPath + "\\" + ImageName + ".jpg", _fui.ImagesData[i]);
+                            break;
+                        case FuiBitmap.FuiImageFormat.JPEG_UNKNOWN:
+                            File.WriteAllBytes(fbd.SelectedPath + "\\" + ImageName + ".jpg", _fui.ImagesData[i]);
+                            break;
+                        case FuiBitmap.FuiImageFormat.JPEG_WITH_ALPHA_DATA:
+                            File.WriteAllBytes(fbd.SelectedPath + "\\" + ImageName + ".jpg", _fui.ImagesData[i]);
+                            break;
+                    }
+                    i++;
+                }
+            }
+            MessageBox.Show("Extracted all Images!");
         }
     }
 }

@@ -49,6 +49,7 @@
             this.replaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyActionObjectNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportAllImagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -74,6 +75,7 @@
             this.openToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
+            this.exportAllImagesToolStripMenuItem,
             this.closeToolStripMenuItem,
             this.exportToJSONToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -117,6 +119,7 @@
             this.exportToJSONToolStripMenuItem.Name = "exportToJSONToolStripMenuItem";
             this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportToJSONToolStripMenuItem.Text = "Export to JSON";
+            this.exportToJSONToolStripMenuItem.Visible = false;
             this.exportToJSONToolStripMenuItem.Click += new System.EventHandler(this.exportToJSONToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
@@ -234,6 +237,14 @@
             this.copyActionObjectNameToolStripMenuItem.Visible = false;
             this.copyActionObjectNameToolStripMenuItem.Click += new System.EventHandler(this.copyActionObjectNameToolStripMenuItem_Click);
             // 
+            // exportAllImagesToolStripMenuItem
+            // 
+            this.exportAllImagesToolStripMenuItem.Enabled = false;
+            this.exportAllImagesToolStripMenuItem.Name = "exportAllImagesToolStripMenuItem";
+            this.exportAllImagesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportAllImagesToolStripMenuItem.Text = "Export All Images";
+            this.exportAllImagesToolStripMenuItem.Click += new System.EventHandler(this.exportAllImagesToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -282,6 +293,7 @@
         private System.Windows.Forms.ToolStripMenuItem creditsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyActionObjectNameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToJSONToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportAllImagesToolStripMenuItem;
     }
 }
 
