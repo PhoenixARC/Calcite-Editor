@@ -389,6 +389,11 @@ namespace CalciteEditor
         {
             if (treeView1.SelectedNode.Parent == null)
             {
+                Forms.Editors.HeaderEditor headerEditor = new Forms.Editors.HeaderEditor(_fui.Header);
+                if (headerEditor.ShowDialog() == DialogResult.OK)
+                {
+                    _fui.Header = headerEditor._header;
+                }
                 return;
             }
             if (treeView1.SelectedNode.Parent.Text.StartsWith("Timeline Actions"))
