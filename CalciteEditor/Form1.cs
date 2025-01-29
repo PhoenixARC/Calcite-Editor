@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ARC_Studio;
 using OMI.Formats.FUI;
 using OMI.Formats.FUI.Components;
 using OMI.Workers.FUI;
@@ -187,16 +188,10 @@ namespace CalciteEditor
             if (treeView1.SelectedNode.Parent.Text.StartsWith("Images")) 
             {
                 int index = (int)treeView1.SelectedNode.Tag;
-                byte[] ImageData = _fui.ImagesData[index];
                 FuiBitmap bitmap = _fui.Bitmaps[index];
-                using (var ms = new MemoryStream(ImageData))
-                {
-                    Image img = Image.FromStream(ms);
-                    Bitmap bmp = new Bitmap(img);
-                    if (bitmap.ImageFormat == FuiBitmap.FuiImageFormat.PNG_WITH_ALPHA_DATA || bitmap.ImageFormat == FuiBitmap.FuiImageFormat.PNG_NO_ALPHA_DATA)
-                        SwapColor(bmp);
-                    pictureBoxWithInterpolationMode1.Image = bmp;
-                }
+
+                pictureBoxWithInterpolationMode1.Image = bitmap.image;
+
                 richTextBox1.Text += "SymbolIndex: " + bitmap.SymbolIndex + "\n";
                 richTextBox1.Text += "FORMAT: ";
                 switch (bitmap.ImageFormat)
@@ -263,16 +258,8 @@ namespace CalciteEditor
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
 
-                    if (ofd.Filter.Contains("PNG Images|*.png"))
-                    {
-                        Bitmap PNGImage = new Bitmap(ofd.FileName);
-                        SwapColor(PNGImage);
-                        ImageConverter converter = new ImageConverter();
-                        byte[] PNGData = (byte[])converter.ConvertTo(PNGImage, typeof(byte[]));
-                        _fui.ImagesData[index] = PNGData;
-                    }
-                    else
-                        _fui.ImagesData[index] = File.ReadAllBytes(ofd.FileName);
+                    Bitmap NewImage = new Bitmap(ofd.FileName);
+                    _fui.Bitmaps[index].image = NewImage;
                     MessageBox.Show("Replaced!");
                 }
 
@@ -310,23 +297,11 @@ namespace CalciteEditor
                 ofd.FileName = treeView1.SelectedNode.Text;
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    if (ofd.Filter.Contains("PNG Images|*.png"))
-                    {
-                        byte[] ImageData = _fui.ImagesData[index];
-                        using (var ms = new MemoryStream(ImageData))
-                        {
-                            Image img = Image.FromStream(ms);
-                            Bitmap bmp = new Bitmap(img);
-                            SwapColor(bmp);
-                            bmp.Save(ofd.FileName);
-                            img.Dispose();
-                            bmp.Dispose();
-                            ms.Close();
-                            ms.Dispose();
-                        }
-                    }
-                    else
-                        File.WriteAllBytes(ofd.FileName, _fui.ImagesData[index]);
+
+                    Bitmap bmp = new Bitmap(_fui.Bitmaps[index].image);
+                    bmp.Save(ofd.FileName);
+                    bmp.Dispose();
+
                     MessageBox.Show("Extracted!");
                 }
 
@@ -435,51 +410,25 @@ namespace CalciteEditor
                         ImageName = _fui.Symbols[bitmap.SymbolIndex].Name;
                     }
 
+                    string extension = ".png";
+
                     switch (bitmap.ImageFormat)
                     {
-                        case FuiBitmap.FuiImageFormat.PNG_WITH_ALPHA_DATA:
-                            { 
-                                byte[] ImageData = _fui.ImagesData[i];
-                                using (var ms = new MemoryStream(ImageData))
-                                {
-                                    Image img = Image.FromStream(ms);
-                                    Bitmap bmp = new Bitmap(img);
-                                    SwapColor(bmp);
-                                    bmp.Save(fbd.SelectedPath + "\\" + ImageName + ".png");
-                                    img.Dispose();
-                                    bmp.Dispose();
-                                    ms.Close();
-                                    ms.Dispose();
-                                }
-                            }
-
-                            break;
-                        case FuiBitmap.FuiImageFormat.PNG_NO_ALPHA_DATA:
-                            {
-                                byte[] ImageData = _fui.ImagesData[i];
-                                using (var ms = new MemoryStream(ImageData))
-                                {
-                                    Image img = Image.FromStream(ms);
-                                    Bitmap bmp = new Bitmap(img);
-                                    SwapColor(bmp);
-                                    bmp.Save(fbd.SelectedPath + "\\" + ImageName + ".png");
-                                    img.Dispose();
-                                    bmp.Dispose();
-                                    ms.Close();
-                                    ms.Dispose();
-                                }
-                            }
-                            break;
                         case FuiBitmap.FuiImageFormat.JPEG_NO_ALPHA_DATA:
-                            File.WriteAllBytes(fbd.SelectedPath + "\\" + ImageName + ".jpg", _fui.ImagesData[i]);
+                            extension = ".jpg";
                             break;
                         case FuiBitmap.FuiImageFormat.JPEG_UNKNOWN:
-                            File.WriteAllBytes(fbd.SelectedPath + "\\" + ImageName + ".jpg", _fui.ImagesData[i]);
+                            extension = ".jpg";
                             break;
                         case FuiBitmap.FuiImageFormat.JPEG_WITH_ALPHA_DATA:
-                            File.WriteAllBytes(fbd.SelectedPath + "\\" + ImageName + ".jpg", _fui.ImagesData[i]);
+                            extension = ".jpg";
                             break;
                     }
+
+                    Bitmap bmp = new Bitmap(_fui.Bitmaps[i].image);
+                    bmp.Save(fbd.SelectedPath + "\\" + ImageName + extension);
+                    bmp.Dispose();
+
                     i++;
                 }
             }
