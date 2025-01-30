@@ -212,6 +212,7 @@ namespace CalciteEditor
                         richTextBox1.Text += "JPEG_WITH_ALPHA_DATA\n";
                         break;
                 }
+                richTextBox1.Text += $"Size: {bitmap.ImageSize.Width}x{bitmap.ImageSize.Height}\n";
             }
         }
 
