@@ -23,11 +23,13 @@ namespace CalciteEditor
         public FourjUIReader _fuiReader;
         public FourjUIWriter _fuiWriter;
         public string _fuiFilePath;
+        List<FuiReference> AdditionalReferences = new List<FuiReference>();
         public Form1()
         {
             InitializeComponent();
             _fuiReader = new FourjUIReader();
             _fuiWriter = new FourjUIWriter(_fui);
+            AdditionalReferences = new List<FuiReference>();
         }
         public Form1(string Filepath)
         {
@@ -46,6 +48,8 @@ namespace CalciteEditor
             exportToJSONToolStripMenuItem.Enabled = true;
             exportAllImagesToolStripMenuItem.Enabled = true;
             treeView1.ExpandAll();
+            foreach(string s in _fui.ImportAssets)
+                    LoadExternalReferences(s);
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -54,6 +58,7 @@ namespace CalciteEditor
             ofd.Filter = "FUI Files|*.fui";
             if (ofd.ShowDialog() == DialogResult.OK) 
             {
+                AdditionalReferences.Clear();
                 _fui = _fuiReader.FromFile(ofd.FileName);
                 _fuiFilePath = ofd.FileName;
                 ActiveForm.Text = "[BETA]Calcite FUI Editor: " + _fui.Header.SwfFileName;
@@ -66,6 +71,8 @@ namespace CalciteEditor
                 exportToJSONToolStripMenuItem.Enabled = true;
                 exportAllImagesToolStripMenuItem.Enabled = true;
                 treeView1.ExpandAll();
+                foreach (string s in _fui.ImportAssets)
+                    LoadExternalReferences(s);
 
             }
         }
@@ -104,6 +111,7 @@ namespace CalciteEditor
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _fui = null;
+            AdditionalReferences.Clear();
             System.GC.Collect();
             ActiveForm.Text = "[BETA]Calcite FUI Editor";
             treeView1.Nodes.Clear();
@@ -163,10 +171,14 @@ namespace CalciteEditor
             foreach (FuiTimelineEvent _event in _fui.TimelineEvents)
             {
                 TreeNode tnBitmap = new TreeNode();
-                if (_fui.References.Count > (int)_event.Index)
+
+                tnBitmap.Text = "Event["+i+"]";
+                if(_fui.References.Count > _event.Index)
                     tnBitmap.Text = _fui.References[(int)_event.Index].Name;
-                else
-                    tnBitmap.Text = "Event["+i+"]";
+                else if(_event.Index < (_fui.References.Count + AdditionalReferences.Count))
+                    tnBitmap.Text = AdditionalReferences[(int)(_event.Index - _fui.References.Count)].Name;
+
+
                 tnBitmap.Tag = i;
                 tnEvents.Nodes.Add(tnBitmap);
                 i++;
@@ -179,12 +191,38 @@ namespace CalciteEditor
             treeView1.Nodes.Add(tn);
         }
 
+        public void LoadExternalReferences(string ReferenceName)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            string fuiRefName = ReferenceName.Replace(".swf",".fui");
+            openFileDialog.Filter = "fourjUI Files|" + fuiRefName;
+            if (ReferenceName.StartsWith("platformskin"))
+            {
+                openFileDialog.Filter = "Platform File|skin*.fui";
+
+
+                MessageBox.Show(ReferenceName + " is not an included UI name, please select \'skin<Platform>.fui\'", "Improper ImportAsset Name", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+            }
+            if (openFileDialog.ShowDialog() == DialogResult.OK) 
+            {
+                FourjUserInterface _fui2 = _fuiReader.FromFile(openFileDialog.FileName);
+                foreach(FuiReference refer in _fui2.References)
+                    AdditionalReferences.Add(refer);
+                foreach(string s in _fui2.ImportAssets)
+                    LoadExternalReferences(s);
+            }
+        }
+
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             richTextBox1.Text = "";
             pictureBoxWithInterpolationMode1.Image = null;
             if (treeView1.SelectedNode.Parent == null)
+            {
+                foreach (string s in _fui.ImportAssets)
+                    richTextBox1.Text += s + "\n";
                 return;
+            }
             if (treeView1.SelectedNode.Parent.Text.StartsWith("Images")) 
             {
                 int index = (int)treeView1.SelectedNode.Tag;

@@ -42,6 +42,9 @@ namespace CalciteEditor.Forms.Editors
             numericUpDown5.Value = (decimal)_event.Matrix.Translation.X;
             numericUpDown6.Value = (decimal)_event.Matrix.Translation.Y;
 
+            numericUpDown7.Value = (decimal)_event.NameIndex;
+            numericUpDown8.Value = (decimal)_event.Index;
+
             checkBox1.Checked = _event.Matrix.Translation.IsEmpty;
         }
 

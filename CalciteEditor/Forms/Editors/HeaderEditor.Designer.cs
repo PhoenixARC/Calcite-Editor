@@ -81,6 +81,11 @@
             0,
             0,
             0});
+            this.MinYSize.Minimum = new decimal(new int[] {
+            99999,
+            0,
+            0,
+            -2147483648});
             this.MinYSize.Name = "MinYSize";
             this.MinYSize.Size = new System.Drawing.Size(120, 20);
             this.MinYSize.TabIndex = 10;
@@ -111,6 +116,11 @@
             0,
             0,
             0});
+            this.MinXSize.Minimum = new decimal(new int[] {
+            99999,
+            0,
+            0,
+            -2147483648});
             this.MinXSize.Name = "MinXSize";
             this.MinXSize.Size = new System.Drawing.Size(120, 20);
             this.MinXSize.TabIndex = 14;
@@ -123,6 +133,11 @@
             0,
             0,
             0});
+            this.MaxXSize.Minimum = new decimal(new int[] {
+            99999,
+            0,
+            0,
+            -2147483648});
             this.MaxXSize.Name = "MaxXSize";
             this.MaxXSize.Size = new System.Drawing.Size(120, 20);
             this.MaxXSize.TabIndex = 18;
@@ -153,6 +168,11 @@
             0,
             0,
             0});
+            this.MaxYSize.Minimum = new decimal(new int[] {
+            99999,
+            0,
+            0,
+            -2147483648});
             this.MaxYSize.Name = "MaxYSize";
             this.MaxYSize.Size = new System.Drawing.Size(120, 20);
             this.MaxYSize.TabIndex = 15;
