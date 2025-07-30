@@ -48,8 +48,8 @@ namespace CalciteEditor
             exportToJSONToolStripMenuItem.Enabled = true;
             exportAllImagesToolStripMenuItem.Enabled = true;
             treeView1.ExpandAll();
-            foreach(string s in _fui.ImportAssets)
-                    LoadExternalReferences(s);
+            //foreach(string s in _fui.ImportAssets)
+              //      LoadExternalReferences(s);
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -71,8 +71,8 @@ namespace CalciteEditor
                 exportToJSONToolStripMenuItem.Enabled = true;
                 exportAllImagesToolStripMenuItem.Enabled = true;
                 treeView1.ExpandAll();
-                foreach (string s in _fui.ImportAssets)
-                    LoadExternalReferences(s);
+                //foreach (string s in _fui.ImportAssets)
+                  //  LoadExternalReferences(s);
 
             }
         }
@@ -442,12 +442,15 @@ namespace CalciteEditor
                     string ImageName = "";
 
 
-                    if (bitmap.SymbolIndex == -1)
-                        ImageName = "Image[" + bitmap.SymbolIndex + "]";
+                    if (bitmap.SymbolIndex != -1)
+                        ImageName = _fui.Symbols[bitmap.SymbolIndex].Name;
                     else
                     {
-                        ImageName = _fui.Symbols[bitmap.SymbolIndex].Name;
+                        ImageName = "Image[" + bitmap.SymbolIndex + "]";
                     }
+
+                    FuiBitmap _bmp = _fui.Bitmaps[i];
+                    Bitmap bmp = new Bitmap(_bmp.image);
 
                     string extension = ".png";
 
@@ -462,9 +465,16 @@ namespace CalciteEditor
                         case FuiBitmap.FuiImageFormat.JPEG_WITH_ALPHA_DATA:
                             extension = ".jpg";
                             break;
+                        case FuiBitmap.FuiImageFormat.PNG_WITH_ALPHA_DATA:
+                            extension = ".png";
+                            _bmp.ReverseRGB(bmp);
+                            break;
+                        case FuiBitmap.FuiImageFormat.PNG_NO_ALPHA_DATA:
+                            extension = ".png";
+                            _bmp.ReverseRGB(bmp);
+                            break;
                     }
-
-                    Bitmap bmp = new Bitmap(_fui.Bitmaps[i].image);
+                    
                     bmp.Save(fbd.SelectedPath + "\\" + ImageName + extension);
                     bmp.Dispose();
 

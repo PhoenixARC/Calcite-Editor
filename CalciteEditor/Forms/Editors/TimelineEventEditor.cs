@@ -45,6 +45,9 @@ namespace CalciteEditor.Forms.Editors
             numericUpDown7.Value = (decimal)_event.NameIndex;
             numericUpDown8.Value = (decimal)_event.Index;
 
+            numericUpDown10.Value = (decimal)_event.Matrix.RotateSkew0;
+            numericUpDown9.Value = (decimal)_event.Matrix.RotateSkew1;
+
             checkBox1.Checked = _event.Matrix.Translation.IsEmpty;
         }
 
@@ -60,6 +63,9 @@ namespace CalciteEditor.Forms.Editors
 
             _event.Matrix.Translation.X = (float)numericUpDown5.Value;
             _event.Matrix.Translation.Y = (float)numericUpDown6.Value;
+
+            _event.Matrix.RotateSkew0 = (float)numericUpDown10.Value;
+            _event.Matrix.RotateSkew1 = (float)numericUpDown9.Value;
 
 
             this.DialogResult = DialogResult.OK;
