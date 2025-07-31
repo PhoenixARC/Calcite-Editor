@@ -465,12 +465,7 @@ namespace CalciteEditor
                         case FuiBitmap.FuiImageFormat.JPEG_WITH_ALPHA_DATA:
                             extension = ".jpg";
                             break;
-                        case FuiBitmap.FuiImageFormat.PNG_WITH_ALPHA_DATA:
-                            extension = ".png";
-                            _bmp.ReverseRGB(bmp);
-                            break;
                         case FuiBitmap.FuiImageFormat.PNG_NO_ALPHA_DATA:
-                            extension = ".png";
                             _bmp.ReverseRGB(bmp);
                             break;
                     }
