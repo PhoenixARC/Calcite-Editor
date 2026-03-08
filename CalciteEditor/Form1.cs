@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,7 +13,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ARC_Studio;
 using OMI.Formats.FUI;
-using OMI.Formats.FUI.Components;
 using OMI.Workers.FUI;
 
 namespace CalciteEditor
@@ -134,11 +134,6 @@ namespace CalciteEditor
             TreeNode tnImages = new TreeNode();
             tnImages.Text = "Images";
             
-            TreeNode tnActions = new TreeNode();
-            tnActions.Text = "Timeline Actions";
-            
-            TreeNode tnEvents = new TreeNode();
-            tnEvents.Text = "Timeline Events";
             
 
             int i = 0;
@@ -158,34 +153,8 @@ namespace CalciteEditor
                 i++;
             }
             i = 0;
-            foreach (FuiTimelineAction action in _fui.TimelineActions)
-            {
-                TreeNode tnBitmap = new TreeNode();
-                tnBitmap.Text = action.StringArg0 + ":" + action.StringArg1;
-                tnBitmap.Tag = i;
-                if (!string.IsNullOrEmpty(action.StringArg0) && !string.IsNullOrEmpty(action.StringArg1))
-                    tnActions.Nodes.Add(tnBitmap);
-                i++;
-            }
-            i = 0;
-            foreach (FuiTimelineEvent _event in _fui.TimelineEvents)
-            {
-                TreeNode tnBitmap = new TreeNode();
+            
 
-                tnBitmap.Text = "Event["+i+"]";
-                if(_fui.References.Count > _event.Index)
-                    tnBitmap.Text = _fui.References[(int)_event.Index].Name;
-                else if(_event.Index < (_fui.References.Count + AdditionalReferences.Count))
-                    tnBitmap.Text = AdditionalReferences[(int)(_event.Index - _fui.References.Count)].Name;
-
-
-                tnBitmap.Tag = i;
-                tnEvents.Nodes.Add(tnBitmap);
-                i++;
-            }
-
-            tn.Nodes.Add(tnActions);
-            tn.Nodes.Add(tnEvents);
             tn.Nodes.Add(tnImages);
 
             treeView1.Nodes.Add(tn);
@@ -228,7 +197,7 @@ namespace CalciteEditor
                 int index = (int)treeView1.SelectedNode.Tag;
                 FuiBitmap bitmap = _fui.Bitmaps[index];
 
-                pictureBoxWithInterpolationMode1.Image = bitmap.image;
+                pictureBoxWithInterpolationMode1.Image = bitmap.Image;
 
                 richTextBox1.Text += "SymbolIndex: " + bitmap.SymbolIndex + "\n";
                 richTextBox1.Text += "FORMAT: ";
@@ -243,14 +212,11 @@ namespace CalciteEditor
                     case FuiBitmap.FuiImageFormat.JPEG_NO_ALPHA_DATA:
                         richTextBox1.Text += "JPEG_NO_ALPHA_DATA\n";
                         break;
-                    case FuiBitmap.FuiImageFormat.JPEG_UNKNOWN:
-                        richTextBox1.Text += "JPEG_UNKNOWN\n";
-                        break;
                     case FuiBitmap.FuiImageFormat.JPEG_WITH_ALPHA_DATA:
                         richTextBox1.Text += "JPEG_WITH_ALPHA_DATA\n";
                         break;
                 }
-                richTextBox1.Text += $"Size: {bitmap.ImageSize.Width}x{bitmap.ImageSize.Height}\n";
+                richTextBox1.Text += $"Size: {bitmap.Image.Width}x{bitmap.Image.Height}\n";
             }
         }
 
@@ -287,18 +253,18 @@ namespace CalciteEditor
                     case FuiBitmap.FuiImageFormat.JPEG_NO_ALPHA_DATA:
                         ofd.Filter = "JPEG Images|*.jpg";
                         break;
-                    case FuiBitmap.FuiImageFormat.JPEG_UNKNOWN:
-                        ofd.Filter = "JPEG Images|*.jpg";
-                        break;
                     case FuiBitmap.FuiImageFormat.JPEG_WITH_ALPHA_DATA:
                         ofd.Filter = "JPEG Images|*.jpg";
                         break;
                 }
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-
+                    PixelFormat pf = PixelFormat.Format32bppPArgb;
+                    if (bitmap.ImageFormat == FuiBitmap.FuiImageFormat.PNG_NO_ALPHA_DATA || bitmap.ImageFormat == FuiBitmap.FuiImageFormat.JPEG_NO_ALPHA_DATA)
+                        pf = PixelFormat.Format24bppRgb;
                     Bitmap NewImage = new Bitmap(ofd.FileName);
-                    _fui.Bitmaps[index].image = NewImage;
+                    Bitmap NewImage2 = new Bitmap(NewImage.Width, NewImage.Height, pf);
+                    _fui.Bitmaps[index] = new FuiBitmap(NewImage2, bitmap.ImageFormat, bitmap.SymbolIndex);
                     MessageBox.Show("Replaced!");
                 }
 
@@ -326,9 +292,6 @@ namespace CalciteEditor
                     case FuiBitmap.FuiImageFormat.JPEG_NO_ALPHA_DATA:
                         ofd.Filter = "JPEG Images|*.jpg";
                         break;
-                    case FuiBitmap.FuiImageFormat.JPEG_UNKNOWN:
-                        ofd.Filter = "JPEG Images|*.jpg";
-                        break;
                     case FuiBitmap.FuiImageFormat.JPEG_WITH_ALPHA_DATA:
                         ofd.Filter = "JPEG Images|*.jpg";
                         break;
@@ -337,7 +300,7 @@ namespace CalciteEditor
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
 
-                    Bitmap bmp = new Bitmap(_fui.Bitmaps[index].image);
+                    Bitmap bmp = new Bitmap(_fui.Bitmaps[index].Image);
                     bmp.Save(ofd.FileName);
                     bmp.Dispose();
 
@@ -406,18 +369,18 @@ namespace CalciteEditor
                 Forms.Editors.HeaderEditor headerEditor = new Forms.Editors.HeaderEditor(_fui.Header);
                 if (headerEditor.ShowDialog() == DialogResult.OK)
                 {
-                    _fui.Header = headerEditor._header;
+                    //_fui.Header = headerEditor._header;
                 }
                 return;
             }
             if (treeView1.SelectedNode.Parent.Text.StartsWith("Timeline Actions"))
             {
-                int index = (int)treeView1.SelectedNode.Tag;
+                /* int index = (int)treeView1.SelectedNode.Tag;
                 Forms.Editors.TimelineActionEditor ActionEditor = new Forms.Editors.TimelineActionEditor(_fui.TimelineActions[index]);
                 if (ActionEditor.ShowDialog() == DialogResult.OK) 
                 {
-                    _fui.TimelineActions[index] = ActionEditor._action;
-                }
+                    //_fui.TimelineActions[index] = ActionEditor._action;
+                }*/
                 return;
             }
             if (treeView1.SelectedNode.Parent.Text.StartsWith("Timeline Events"))
@@ -426,7 +389,7 @@ namespace CalciteEditor
                 Forms.Editors.TimelineEventEditor ActionEditor = new Forms.Editors.TimelineEventEditor(_fui, index);
                 if (ActionEditor.ShowDialog() == DialogResult.OK) 
                 {
-                    _fui.TimelineEvents[index] = ActionEditor._event;
+                    //_fui.TimelineEvents[index] = ActionEditor._event;
                 }
                 return;
             }
@@ -450,7 +413,7 @@ namespace CalciteEditor
                     }
 
                     FuiBitmap _bmp = _fui.Bitmaps[i];
-                    Bitmap bmp = new Bitmap(_bmp.image);
+                    Bitmap bmp = new Bitmap(_bmp.Image);
 
                     string extension = ".png";
 
@@ -459,14 +422,8 @@ namespace CalciteEditor
                         case FuiBitmap.FuiImageFormat.JPEG_NO_ALPHA_DATA:
                             extension = ".jpg";
                             break;
-                        case FuiBitmap.FuiImageFormat.JPEG_UNKNOWN:
-                            extension = ".jpg";
-                            break;
                         case FuiBitmap.FuiImageFormat.JPEG_WITH_ALPHA_DATA:
                             extension = ".jpg";
-                            break;
-                        case FuiBitmap.FuiImageFormat.PNG_NO_ALPHA_DATA:
-                            _bmp.ReverseRGB(bmp);
                             break;
                     }
                     

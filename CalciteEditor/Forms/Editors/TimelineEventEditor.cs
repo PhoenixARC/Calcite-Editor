@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using OMI.Formats.FUI;
-using OMI.Formats.FUI.Components;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace CalciteEditor.Forms.Editors
@@ -20,7 +19,7 @@ namespace CalciteEditor.Forms.Editors
 
         public TimelineEventEditor(FourjUserInterface fui, int index)
         {
-            InitializeComponent();
+            InitializeComponent();/*
             _fui = fui;
             _event = _fui.TimelineEvents[index];
 
@@ -48,11 +47,11 @@ namespace CalciteEditor.Forms.Editors
             numericUpDown10.Value = (decimal)_event.Matrix.RotateSkew0;
             numericUpDown9.Value = (decimal)_event.Matrix.RotateSkew1;
 
-            checkBox1.Checked = _event.Matrix.Translation.IsEmpty;
+            checkBox1.Checked = _event.Matrix.Translation.IsEmpty;*/
         }
 
         private void button1_Click(object sender, EventArgs e)
-        {
+        {/*
             _event.EventType = (short)numericUpDown1.Value;
             _event.ObjectType = (short)numericUpDown2.Value;
             if(comboBox1.Enabled)
@@ -65,7 +64,7 @@ namespace CalciteEditor.Forms.Editors
             _event.Matrix.Translation.Y = (float)numericUpDown6.Value;
 
             _event.Matrix.RotateSkew0 = (float)numericUpDown10.Value;
-            _event.Matrix.RotateSkew1 = (float)numericUpDown9.Value;
+            _event.Matrix.RotateSkew1 = (float)numericUpDown9.Value;*/
 
 
             this.DialogResult = DialogResult.OK;
